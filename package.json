@@ -1,0 +1,71 @@
+{
+  "name": "cinephile",
+  "version": "1.0.0",
+  "description": "Cinephile - anime, movie, web series and documentary tracker",
+  "main": "main.js",
+  "license": "MIT",
+  "copyright": "Copyright (c) 2026 Cinephile contributors",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "start": "electron .",
+    "check": "node scripts/verify.js",
+    "predist:win": "node scripts/verify.js",
+    "dist:win": "electron-builder --win nsis"
+  },
+  "dependencies": {
+    "@fontsource/inter": "^5.0.0",
+    "@fontsource/league-gothic": "^5.0.0",
+    "@fontsource/poppins": "^5.0.0"
+  },
+  "devDependencies": {
+    "electron": "^44.7.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.cinephile.app",
+    "productName": "Cinephile",
+    "copyright": "Copyright (c) 2026 Cinephile contributors",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "index.html",
+      "style.css",
+      "config.js",
+      "app.js",
+      "detail.js",
+      "lists.js",
+      "multiverse.js",
+      "profile.js",
+      "apikey.js",
+      "assets/icons/**/*",
+      "node_modules/@fontsource/**/*",
+      "!**/*.map"
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icons/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Cinephile",
+      "deleteAppDataOnUninstall": false,
+      "artifactName": "Cinephile-Setup-${version}.exe"
+    }
+  }
+}

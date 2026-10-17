@@ -1,0 +1,27 @@
+# dependencies and build output
+node_modules/
+dist/
+release/
+out/
+build/
+
+# secrets and local configuration
+.env
+.env.*
+*.local
+config.local.js
+*.pem
+*.pfx
+*.p12
+
+# logs
+*.log
+npm-debug.log*
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp

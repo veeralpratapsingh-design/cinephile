@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://image.tmdb.org; connect-src https://api.themoviedb.org; script-src 'self'">
+  <title>Cinephile</title>
+  <link rel="icon" href="assets/icons/icon.png">
+  <link rel="stylesheet" href="node_modules/@fontsource/poppins/400.css">
+  <link rel="stylesheet" href="node_modules/@fontsource/poppins/500.css">
+  <link rel="stylesheet" href="node_modules/@fontsource/poppins/600.css">
+  <link rel="stylesheet" href="node_modules/@fontsource/inter/300.css">
+  <link rel="stylesheet" href="node_modules/@fontsource/inter/400.css">
+  <link rel="stylesheet" href="node_modules/@fontsource/inter/500.css">
+  <link rel="stylesheet" href="node_modules/@fontsource/inter/600.css">
+  <link rel="stylesheet" href="node_modules/@fontsource/league-gothic/400.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- worn / distressed look for big movie titles -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <filter id="grunge" x="-3%" y="-3%" width="106%" height="106%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7" result="warp"/>
+    <feDisplacementMap in="SourceGraphic" in2="warp" scale="3" xChannelSelector="R" yChannelSelector="G" result="rough"/>
+    <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="3" seed="3" result="noise"/>
+    <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  8 0 0 0 -2.5" result="mask"/>
+    <feComposite in="rough" in2="mask" operator="in"/>
+  </filter>
+  <!-- same worn look, gentler, for smaller lettering (album names) -->
+  <filter id="grungeS" x="-3%" y="-3%" width="106%" height="106%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="7" result="warp"/>
+    <feDisplacementMap in="SourceGraphic" in2="warp" scale="1.4" xChannelSelector="R" yChannelSelector="G" result="rough"/>
+    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3" result="noise"/>
+    <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  5 0 0 0 -0.95" result="mask"/>
+    <feComposite in="rough" in2="mask" operator="in"/>
+  </filter>
+</defs></svg>
+<div class="app">
+  <aside class="side">
+    <div class="logo"><img class="logo-img" src="assets/icons/icon.png" alt=""><b>cinephile</b></div>
+    <nav class="nav" id="nav"></nav>
+  </aside>
+
+  <main class="main">
+    <header class="top" id="top">
+      <div class="box seg" id="seg"></div>
+      <div class="box search" id="searchBox" title="Search (Ctrl+K)">
+        <i data-i="search"></i>
+        <input id="q" placeholder="Search..." autocomplete="off">
+        <span class="flt"><i data-i="sliders"></i></span>
+      </div>
+      <button class="box sortb" id="sortBtn" title="Sort by rating (high to low)"><i data-i="sort"></i></button>
+      <button class="box sortb" id="shelfBtn" title="Book view: show these titles as a shelf of books"><i data-i="book"></i></button>
+      <div class="total" id="totalBox"><b id="totalNum">0</b><span id="totalLbl">total saved</span></div>
+      <a class="box bell" id="ghBtn" title="GitHub"><i data-i="github"></i></a>
+      <button class="box bell" id="keyBtn" title="TMDB API key"><i data-i="key"></i></button>
+      <div class="box profile" id="profBtn" role="button" tabindex="0" title="Add a profile photo"><img id="profImg" alt="" hidden><span id="profInit"></span><i class="prof-cam" data-i="camera" data-s="18"></i><button class="prof-x" id="profX" title="Remove photo" hidden>&times;</button><input id="profFile" type="file" accept="image/*" hidden></div>
+    </header>
+
+    <div class="scroll" id="scroll">
+      <div id="viewHome">
+        <h2 class="res-title" id="resTitle"></h2>
+
+        <section class="hero-wrap" id="heroWrap">
+          <div class="dots" id="dots"></div>
+        </section>
+
+        <section class="pills">
+          <div class="pl-list" id="pills"></div>
+          <button class="arrow" id="prev" data-i="left"></button>
+          <button class="arrow" id="next" data-i="right"></button>
+        </section>
+
+        <section class="grid" id="grid"></section>
+        <div class="more" id="more"></div>
+      </div>
+
+      <div id="viewList" hidden>
+        <section class="grid" id="listGrid"></section>
+        <div id="listShelf" hidden></div>
+      </div>
+
+      <div id="viewMulti" hidden></div>
+
+      <div id="viewPage" class="page" hidden></div>
+    </div>
+  </main>
+</div>
+<div id="detail" class="dt" hidden></div>
+
+<!-- TMDB API key -->
+<div id="keyDlg" class="dlg" hidden>
+  <div class="dlg-card">
+    <h3>TMDB API key</h3>
+    <p class="key-help">Cinephile gets titles, posters and details from TMDB. Paste your own free key (the short <b>API Key</b> or the long <b>API Read Access Token</b>).
+      Get one at <a href="https://www.themoviedb.org/settings/api" target="_blank" rel="noopener">themoviedb.org/settings/api</a> (free account required).</p>
+    <label for="keyIn">Your key</label>
+    <input id="keyIn" type="password" placeholder="Paste your TMDB key here" spellcheck="false" autocomplete="off">
+    <div class="key-err" id="keyErr"></div>
+    <p class="key-note">The key is stored only on this computer, in the app's local storage. That is convenient but is not a secure vault, so use a key you can revoke.</p>
+    <p class="key-note">This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
+    <div class="dlg-act"><button class="btn ghost" id="keyRm" hidden>Remove key</button><span style="flex:1"></span><button class="btn ghost" id="keyCancel">Cancel</button><button class="btn" id="keySave">Save key</button></div>
+  </div>
+</div>
+
+<!-- new album -->
+<div id="albDlg" class="dlg" hidden>
+  <div class="dlg-card">
+    <h3>New album</h3>
+    <label for="albName">Name</label>
+    <input id="albName" maxlength="26" placeholder="e.g. Rainy day watches" autocomplete="off">
+    <label>Choose a design</label>
+    <div class="dlg-grid" id="albDesigns"></div>
+    <div class="dlg-act"><button class="btn ghost" id="albCancel">Cancel</button><button class="btn" id="albCreate">Create album</button></div>
+  </div>
+</div>
+<script src="config.js"></script>
+<script src="app.js"></script>
+<script src="detail.js"></script>
+<script src="lists.js"></script>
+<script src="multiverse.js"></script>
+<script src="profile.js"></script>
+<script src="apikey.js"></script>
+</body>
+</html>
